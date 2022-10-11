@@ -1,5 +1,5 @@
 /*------<INTIATE WALLET CONTROLLER>------*/
-const User = require("./../model/userModel");
+const User = require("./../model/userModel");``
 const Wallet = require("./../model/walletModel");
 const asyncHandler = require("express-async-handler");
 /*------<MRTHODS WALLET CONTROLLER>------*/
