@@ -1,26 +1,26 @@
 /*------<INTIATE PRODUCT CONTROLLER>------*/
 const User = require("./../model/productModel");
 const asyncHandler = require("express-async-handler");
-const ProdValidate = require("./../middleware/validation/validateProd");
+const GeneralValidate = require("./../middleware/validation/validateProd");
 const Product = require("./../model/productModel");
 const { createToken } = require("../middleware/token/handlerToken");
 /*------<MRTHODS PRODUCT CONTROLLER>------*/
 exports.addProduct = asyncHandler(async(req,res,next)=>{
     const newProd = req.body;
-    const valideProd = new ProdValidate(newProd)
+    const generalValidate = new GeneralValidate(newProd)
     .isExist(['title','price','entities'])
     .isGT('price')
     .get();
-    if (!valideProd) {
+    if (!generalValidate) {
         res.status(401).json({
             status: "c",
             messages: "Invalid Data",
-            data: valideProd,
+            data: generalValidate,
           });
           res.end();
     }
     /*------<2><CREATE DATA>------*/
-    const prod = await Product.create(valideProd);
+    const prod = await Product.create(generalValidate);
     const token = createToken(prod._id);
     /*------<3><RESPONSE DATA>------*/
     res.status(201).json({
@@ -47,6 +47,12 @@ exports.oneProduct = asyncHandler(async(req,res,next)=>{
       })
     }
     const prod = await Product.findById(prodId);
+    if (!prod) {
+      res.status(404).json({
+        status : "c",
+        message : "product does'nt exist"
+      })
+    }
     res.status(200).json({
       status : "a",
       data : prod
@@ -62,6 +68,12 @@ exports.updateProduct = asyncHandler(async(req,res,next)=>{
       })
     }
     const prod = await Product.findByIdAndUpdate(prodId,newInfo,{new: true});
+    if (!prod) {
+      res.status(404).json({
+        status : "c",
+        message : "product does'nt exist"
+      })
+    }
     res.status(200).json({
       status : "a",
       data : prod

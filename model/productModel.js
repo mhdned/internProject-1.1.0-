@@ -16,6 +16,10 @@ const productSchema = new mongoose.Schema({
         type : Number,
         required : true
     },
+    userId:{
+        type : mongoose.Types.ObjectId,
+        ref : "User"
+    }
 },{
     timestamps : true
 });
@@ -23,6 +27,6 @@ const productSchema = new mongoose.Schema({
 productSchema.pre('save',async function(){
     this.updatedAt = undefined;
 })
-const Product = new mongoose.model("Product",productSchema);
+const Product = mongoose.model("Product",productSchema);
 /*------<EXPORT PRODUCT MODEL>------*/
 module.exports = Product;

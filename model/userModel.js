@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    valodate: {
+    validate: {
       validator: (value) => {
         return validator.isEmail(value);
       },
@@ -34,11 +34,7 @@ const userSchema = new mongoose.Schema({
     maxLength: 80,
     minLength: 8,
     required: true,
-    valodate: {
-      validator: (value) => {
-        return value === this.password;
-      },
-    },
+    
   },
   phoneNumber: {
     type: String,
@@ -61,7 +57,6 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
-  this.updatedAt = undefined;
 });
 
 userSchema.methods.comparePassword = async function (

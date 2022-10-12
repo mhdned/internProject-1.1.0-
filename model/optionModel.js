@@ -8,11 +8,11 @@ const optionSchema = new mongoose.Schema({
         required : true,
     },    
     value : {
-        type: String,
+        type: Number,
         required : true,
     }
 });
 /*------<CONST OPTION MODEL>------*/
-const Option = new mongoose.model("Option",optionSchema);
+const Option = mongoose.model("Option",optionSchema);
 /*------<EXPORT OPTION MODEL>------*/
 module.exports = Option;

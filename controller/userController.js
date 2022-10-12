@@ -48,6 +48,6 @@ exports.deleteUser = asyncHandler(async(req,res,next)=>{
       message : "id parameter is required"
     })
   }
-  const user = await User.findByIdAndDelete(userId);
+  await User.findByIdAndDelete(userId);
   res.status(204)
 });

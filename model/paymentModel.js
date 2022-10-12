@@ -1,5 +1,6 @@
 /*------<INTIATE PAYMENT MODEL>------*/
 const mongoose = require("mongoose")
+const Wallet = require("./walletModel")
 /*------<PAYMENT SCHEMA>------*/
 const paymenSchema = new mongoose.Schema({
     amount : {
@@ -21,6 +22,9 @@ const paymenSchema = new mongoose.Schema({
         type : mongoose.Types.ObjectId,
         ref : "Wallet"
     },
+    productPrice:{
+        type : Number,
+    },
     productId:{
         type : mongoose.Types.ObjectId,
         ref : "Product"
@@ -28,11 +32,29 @@ const paymenSchema = new mongoose.Schema({
     userId:{
         type : mongoose.Types.ObjectId,
         ref : "User"
+    },
+    walletAmount :{
+        type : Number
+    },
+    uniqueKey : {
+        type : String,
+        require : true
     }
 },{
     timestamps : true
 });
 /*------<CONST PAYMENT MODEL>------*/
-const Payment = new mongoose.model("Payment",walletSchema);
+paymenSchema.pre("save",async function(next) {
+    if (this.walletId) {
+        if(this.productPrice < this.walletAmount){
+            await Wallet.findByIdAndUpdate(this.walletId , {amount : this.walletAmount-this.amount},{new: true});
+        }
+    }
+});
+paymenSchema.pre("save",async function(next) {
+    this.productPrice = undefined;
+    this.walletAmount = undefined;
+})
+const Payment = mongoose.model("Payment",paymenSchema);
 /*------<EXPORT PAYMENT MODEL>------*/
 module.exports = Payment;
