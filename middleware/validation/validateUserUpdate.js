@@ -1,6 +1,6 @@
 const validator = require("validator");
 /*------<VALIDATION MIDDLEWARE>------*/
-exports.userValidations = (data, res) => {
+exports.userUpdateValidations = (data, res) => {
   try {
     if (
       !data.userName ||

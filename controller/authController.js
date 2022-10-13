@@ -1,78 +1,68 @@
 /*------<INTIATE AUTH CONTROLLER>------*/
 const User = require("./../model/userModel");
-const GeneralValidate = require("./../middleware/validation/validateGeneral");
 const asyncHandler = require("express-async-handler");
 const { createToken } = require("../middleware/token/handlerToken");
+const { userValidations } = require("../middleware/validation/validateUser");
 /*------<MRTHODS AUTH CONTROLLER>------*/
 exports.register = asyncHandler(async (req, res, next) => {
-  /*------<1><VALIDATE DATA>------*/
-  const userInfo = req.body;
-  const generalValidate = await new GeneralValidate(userInfo)
-    .isExist([
-      "userName",
-      "fullName",
-      "email",
-      "password",
-      "passwordConfirm",
-      "phoneNumber",
-      "nationalNumber",
-    ])
-    .isString([
-      "userName",
-      "fullName",
-      "email",
-      "password",
-      "passwordConfirm",
-      "phoneNumber",
-      "nationalNumber",
-    ])
-    .get();
-  if (!generalValidate) {
-    res.status(401).json({
-      status: "c",
-      messages: "Invalid Data",
-      data: generalValidate,
+  try {
+    /*------<1><GETTING DATA AND DECLARING VARIABLE>------*/
+    const userInfo = req.body;
+    /*------<2><VALIDATING DATA>------*/
+    const validUserInfo = await userValidations(userInfo, res);
+    /*------<3><CREATE DATA>------*/
+    const newUser = await User.create(validUserInfo);
+    // const user = await User.findById(newUser._id).select("-password").exec();
+    /*------<4><CREATE TOKEN & REQUEST CODE>------*/
+    const newToken = createToken(newUser._id);
+    /*------<5><RESPONSE DATA>------*/
+    res.status(201).json({
+      result: "created",
+      token: newToken,
+      user: newUser,
     });
-    throw new Error("Invalid Data");
-    // return res.status(412).send('Invalid Data')
+  } catch (error) {
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
   }
-  /*------<2><CREATE DATA>------*/
-  const user = await User.create(generalValidate);
-  const token = createToken(user._id);
-  /*------<3><RESPONSE DATA>------*/
-  res.status(201).json({
-    status: "a",
-    token,
-    data: user,
-  });
 });
+
 exports.login = asyncHandler(async (req, res, next) => {
   try {
-    /*------<1><VALIDATE DATA>------*/
-  const userInfo = req.body;
-  const generalValidate = await new GeneralValidate(userInfo)
-  .isExist(['phoneNumber','password'])
-  .get();
-  if (!generalValidate) {
-    res.status(401).json({
-      status: "c",
-      messages: "Invalid Data",
-      data: generalValidate,
+    /*------<1><GETTING DATA AND DECLARING VARIABLE>------*/
+    const userInfo = req.body;
+    /*------<2><VALIDATING DATA>------*/
+    if (!userInfo.phoneNumber || !userInfo.password) {
+      return res.status(400).send("CLIENT ERROR :: INVALID DATA | 👮‍♂️");
+    }
+    /*------<3><FIND USER>------*/
+    const currentUser = await User.findOne({
+      phoneNumber: userInfo.phoneNumber,
     });
-    throw new Error("Invalid Data");
-  }
-  /*------<2><CREATE DATA>------*/
-  const user = await User.findOne({phoneNumber : generalValidate.phoneNumber});
-  const token = await createToken(user._id);
-  /*------<3><RESPONSE DATA>------*/
-  res.status(200).json({
-    status: "a",
-    token,
-    data: user,
-  });
+    /*------<4><CHECK PASSWORD USER>------*/
+    if (
+      !currentUser ||
+      !(await currentUser.comparePassword(
+        userInfo.password,
+        currentUser.password
+      ))
+    ) {
+      return res
+        .status(400)
+        .send("CLIENT ERROR :: USER NOT EXIST OR PASSWORD IS WRONG | 👮‍♂️");
+    }
+    /*------<5><CREATE TOKEN & REQUEST CODE>------*/
+    const newToken = createToken(currentUser._id);
+    /*------<6><RESPONSE DATA>------*/
+    res.status(200).json({
+      result: "success",
+      token: newToken,
+      user: currentUser,
+    });
   } catch (error) {
-    console.log(error)
-    return res.status(500).send('مشکلی پیش آمده است')
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
   }
-  
 });

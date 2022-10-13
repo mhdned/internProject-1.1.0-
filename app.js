@@ -2,7 +2,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const morgan = require("morgan")
+const morgan = require("morgan");
 /*------<MIDDLEWARE APP>------*/
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -15,12 +15,12 @@ const authRoute = require("./routes/authRoutes");
 app.use("/", authRoute);
 const userRoute = require("./routes/userRoutes");
 app.use("/user", userRoute);
-const prodRoute = require("./routes/productRoutes");
-app.use("/prod", prodRoute);
-const walletRoute = require("./routes/walletRoutes");
-app.use("/wallet", walletRoute);
-const adminRoutes = require("./routes/adminRoutes");
-app.use("/admin", adminRoutes);
+// const prodRoute = require("./routes/productRoutes");
+// app.use("/prod", prodRoute);
+// const walletRoute = require("./routes/walletRoutes");
+// app.use("/wallet", walletRoute);
+// const adminRoutes = require("./routes/adminRoutes");
+// app.use("/admin", adminRoutes);
 /*------<MIDDLEWARE APP>------*/
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
