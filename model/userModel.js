@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
     },
     status: { type: Boolean, default: false },
     verified: { type: Boolean, default: false },
-    filesId: { type: mongoose.Types.ObjectId, ref: "Files" },
+    files: { type: Object },
   },
   {
     timestamps: true,

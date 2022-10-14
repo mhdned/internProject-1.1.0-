@@ -9,6 +9,32 @@ exports.createToken = (id) => {
   });
   return token;
 };
+exports.verifyTokenWithOutRes = async (token) => {
+  /*------<CHECK PREFIX TOKEN>------*/
+  if (token && token.startsWith("Bearer")) {
+    token = token.split(" ")[1];
+  }
+  /*------<CHECK TOKEN EXIST>------*/
+  if (!token) {
+    res.status(404).send("TOKEN ERROR :: TOKEN IS INVALID");
+  }
+  try {
+    /*------<CHECK TOKEN>------*/
+    const decoded = jwt.verify(token, process.env.JWT_SECURE_PK);
+    /*------<TOKEN USER>------*/
+    const user = await User.findById(decoded.id);
+    /*------<CHECK TOKEN USER>------*/
+    if (!user) {
+      return "TOKEN ERROR :: NOT FOUND USER";
+    } else {
+      return user;
+    }
+  } catch (error) {
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return "SERVER ERROR :: THERE IS A PROBLEM | 🧯";
+  }
+};
 exports.verifyToken = async (token, res) => {
   /*------<CHECK PREFIX TOKEN>------*/
   if (token && token.startsWith("Bearer")) {

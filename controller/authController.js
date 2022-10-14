@@ -13,6 +13,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     /*------<3><CREATE DATA>------*/
     const newUser = await User.create(validUserInfo);
     // const user = await User.findById(newUser._id).select("-password").exec();
+    newUser.password = undefined;
     /*------<4><CREATE TOKEN & REQUEST CODE>------*/
     const newToken = createToken(newUser._id);
     /*------<5><RESPONSE DATA>------*/
@@ -52,6 +53,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         .status(400)
         .send("CLIENT ERROR :: USER NOT EXIST OR PASSWORD IS WRONG | 👮‍♂️");
     }
+    currentUser.password = undefined;
     /*------<5><CREATE TOKEN & REQUEST CODE>------*/
     const newToken = createToken(currentUser._id);
     /*------<6><RESPONSE DATA>------*/
