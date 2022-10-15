@@ -1,7 +1,8 @@
 const validator = require("validator");
 const asyncHandler = require("express-async-handler");
+const User = require("../../model/userModel");
 /*------<VALIDATION MIDDLEWARE>------*/
-exports.userValidationRegister = asyncHandler(async(req,res,next)=>{
+exports.userValidationRegister = asyncHandler(async (req, res, next) => {
   try {
     const userInfo = req.body;
     if (
@@ -52,14 +53,11 @@ exports.userValidationRegister = asyncHandler(async(req,res,next)=>{
     return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
   }
 });
- 
-exports.userValidationLogin = asyncHandler(async(req,res,next)=>{
+
+exports.userValidationLogin = asyncHandler(async (req, res, next) => {
   try {
     const userInfo = req.body;
-    if (
-      !userInfo.password ||
-      !userInfo.phoneNumber
-    ) {
+    if (!userInfo.password || !userInfo.phoneNumber) {
       return res.status(400).send("CLIENT ERROR :: INVALID DATA | 👮‍♂️");
     }
     if (
@@ -74,10 +72,29 @@ exports.userValidationLogin = asyncHandler(async(req,res,next)=>{
     ) {
       return res.status(400).send("CLIENT ERROR :: INVALID PHONE NUMBER | 👮‍♂️");
     }
+
+    const currentUser = await User.findOne({
+      phoneNumber: userInfo.phoneNumber,
+    });
+
+    if (
+      !currentUser ||
+      !(await currentUser.comparePassword(
+        userInfo.password,
+        currentUser.password
+      ))
+    ) {
+      return res
+        .status(400)
+        .send("CLIENT ERROR :: USER NOT EXIST OR PASSWORD IS WRONG | 👮‍♂️");
+    }
+    currentUser.password = undefined;
+    req.userData = currentUser;
+    req.userId = currentUser._id;
     return next();
   } catch (error) {
     /*------<X><SERVER ERROR>------*/
     console.log(error);
     return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
   }
-})
+});

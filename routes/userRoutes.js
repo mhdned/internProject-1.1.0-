@@ -7,20 +7,22 @@ const {
   updateUser,
   deleteUser,
   forgetPassword,
-  updatedUserMW,
   uploadFiles,
 } = require("./../controller/userController");
-
+const { verifyToken } = require("./../middleware/token/checkToken");
+const { updatedUserMW } = require("./../middleware/multer/multer");
 /*------<BODY ROUTE>------*/
-router.route("/").get(allUser);
+router.route("/").get(verifyToken, allUser);
 
-router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+router
+  .route("/:id")
+  .get(verifyToken, getUser)
+  .patch(verifyToken, updateUser)
+  .delete(verifyToken, deleteUser);
 
-router.route("/forget-password").put(forgetPassword);
+router.route("/forget-password").put(verifyToken, forgetPassword);
 
-router.route("/files").post(updatedUserMW, uploadFiles);
-
-// router.route("/wallet/:id").post(chargeWallet).patch(updateWallet);
+router.route("/files").post(verifyToken, updatedUserMW, uploadFiles);
 
 /*------<EXPORT ROUTE>------*/
 module.exports = router;
