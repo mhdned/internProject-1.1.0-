@@ -8,20 +8,19 @@ exports.register = asyncHandler(async (req, res, next) => {
   try {
     /*------<1><GETTING DATA AND DECLARING VARIABLE>------*/
     const userInfo = req.body;
-    /*------<2><VALIDATING DATA>------*/
-    const validUserInfo = await userValidations(userInfo, res);
-    /*------<3><CREATE DATA>------*/
-    const newUser = await User.create(validUserInfo);
+    /*------<2><CREATE DATA>------*/
+    const newUser = await User.create(userInfo);
     // const user = await User.findById(newUser._id).select("-password").exec();
     newUser.password = undefined;
-    /*------<4><CREATE TOKEN & REQUEST CODE>------*/
+    /*------<3><CREATE TOKEN & REQUEST CODE>------*/
     const newToken = createToken(newUser._id);
-    /*------<5><RESPONSE DATA>------*/
+    /*------<4><RESPONSE DATA>------*/
     res.status(201).json({
       result: "created",
       token: newToken,
       user: newUser,
     });
+    
   } catch (error) {
     /*------<X><SERVER ERROR>------*/
     console.log(error);

@@ -7,20 +7,13 @@ const paymenSchema = new mongoose.Schema({
         type : Number,
         required : true
     },
-    status:{
-        type : Number,
-        enum : [0,1,2],
-        required : true,
-    },
-    typePayment : {
-        type : String ,
-        enum : ['product','charge-wallet'],
-        default : 'product',
-        required : true,
-    },
     walletId:{
         type : mongoose.Types.ObjectId,
         ref : "Wallet"
+    },
+    type : {
+        type : String,
+        enum : ['wallet',"purchase"]
     },
     productPrice:{
         type : Number,
@@ -33,12 +26,11 @@ const paymenSchema = new mongoose.Schema({
         type : mongoose.Types.ObjectId,
         ref : "User"
     },
-    walletAmount :{
-        type : Number
-    },
     uniqueKey : {
         type : String,
-        require : true
+    },
+    date : {
+        type : Number
     }
 },{
     timestamps : true

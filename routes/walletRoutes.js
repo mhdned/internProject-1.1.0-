@@ -1,10 +1,14 @@
 /*------<INTIATE ROUTE>------*/
 const express = require("express");
 const router = express.Router();
-const {protected}= require("./../middleware/protected")
-const {buyProductWithWallet} = require("./../controller/paymentController")
+const {createWallet} = require("./../controller/walletController");
+const {verifyToken} = require("./../middleware/token/checkToken");
+const {
+    validateDataWallet,
+    checkWalletExist
+} = require("./../middleware/validation/validateWallet")
 /*------<BODY ROUTE>------*/
-router.route("/buy/:id")
-    .post(protected,buyProductWithWallet);
+router.route("")
+    .put(verifyToken,validateDataWallet,checkWalletExist,createWallet)
 /*------<EXPORT ROUTE>------*/
 module.exports = router;

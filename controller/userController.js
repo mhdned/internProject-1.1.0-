@@ -1,6 +1,7 @@
 /*------<INTIATE USER CONTROLLER>------*/
 const User = require("./../model/userModel");
 const Files = require("./../model/filesModel");
+const fs = require("node:fs");
 const asyncHandler = require("express-async-handler");
 const {
   verifyToken,
@@ -12,7 +13,7 @@ const bcrypt = require("bcrypt");
 const multer = require("multer");
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // public/doc/users/{{userID}}/{{counter}} ==> public/doc/users/456484dsa5d15153sd5/59
+    // public/doc/users/{{userID}} ==> public/doc/users/456484dsa5d15153sd5/59
     cb(null, "public/doc/users");
   },
   filename: async (req, file, cb) => {
@@ -223,9 +224,10 @@ exports.uploadFiles = asyncHandler(async (req, res, next) => {
   try {
     /*------<1><GET USER & FILE UPLOAD>------*/
     const fileUpload = req.file;
-    const userId = req.params.id;
+    const user = await verifyToken(req.headers.authorization,res)
+    const currentUser = await User.findById(user._id);
     /*------<2><VALIDATE DATA USER>------*/
-    if (!(await User.findById(userId))) {
+    if (!currentUser) {
       res.status(200).send("CLIENT ERROR :: THIS USER IS NOT EXIST");
     }
     /*------<3><CREATE FILE IN DATABASE>------*/
@@ -233,7 +235,7 @@ exports.uploadFiles = asyncHandler(async (req, res, next) => {
       path: fileUpload.path,
       name: fileUpload.filename,
       formatFile: fileUpload.mimetype,
-      userId: userId,
+      userId: currentUser._id,
       size: fileUpload.size,
     });
     /*------<4><CHECK FILE>------*/
@@ -248,7 +250,11 @@ exports.uploadFiles = asyncHandler(async (req, res, next) => {
     });
   } catch (error) {
     /*------<X><SERVER ERROR>------*/
-    console.log(error);
+    fileProblem(req.file.path);
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
   }
 });
+fileProblem = (filePath)=>{
+  let fileDelete = fs.realpathSync(`${__dirname}\\..\\${filePath}`);
+  fs.unlinkSync(fileDelete);
+}

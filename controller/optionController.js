@@ -16,7 +16,8 @@ exports.generateCode = asyncHandler(async (status, key) => {
     );
     finalCode = uniqueCode.value;
   }
-  let uniqueKey = new Date();
+  let today = new Date();
+  let uniqueKey;
   uniqueKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDay()}`;
   uniqueKey += `-${status}`;
   uniqueKey += `-${finalCode}`;
