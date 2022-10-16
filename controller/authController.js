@@ -16,7 +16,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     /*------<4><RESPONSE DATA>------*/
     res.status(201).json({
       result: "created",
-      token: newToken,
+      token: req.userToken,
       user: newUser,
     });
   } catch (error) {

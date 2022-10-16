@@ -175,7 +175,7 @@ exports.uploadFiles = asyncHandler(async (req, res, next) => {
     });
     /*------<4><CHECK FILE>------*/
     if (!file) {
-      console.log(file);
+      // console.log(file);
       return res.status(401).send("SERVER ERROR :: SOMTHING WRONG | 😥");
     }
     /*------<5><RESPONSE USER>------*/

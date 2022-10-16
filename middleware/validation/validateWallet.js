@@ -23,7 +23,10 @@ exports.checkWalletExist = asyncHandler(async (req, res, next) => {
             req.walletId = walletExist._id;
             return next();
         }
-        const wallet = await Wallet.create(walletInfo);
+        const wallet = await Wallet.create({
+            amount : req.body.amount,
+            userId : req.userId
+        });
         if(wallet){
             req.wallet = wallet;
             next();

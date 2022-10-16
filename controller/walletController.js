@@ -20,7 +20,6 @@ exports.createWallet = asyncHandler(async (req, res, next) => {
   } catch (error) {
     /*------<X><SERVER ERROR>------*/
     console.log(error);
-    generateCode("failed", "wallet");
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
   }
 });
