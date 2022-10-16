@@ -1,6 +1,7 @@
 const validator = require("validator");
 const asyncHandler = require("express-async-handler");
 const User = require("../../model/userModel");
+const IRCheck = require("ircheck");
 /*------<VALIDATION MIDDLEWARE>------*/
 exports.userValidationRegister = asyncHandler(async (req, res, next) => {
   try {
@@ -45,6 +46,11 @@ exports.userValidationRegister = asyncHandler(async (req, res, next) => {
       typeof (userInfo.phoneNumber * 1) !== "number"
     ) {
       return res.status(400).send("CLIENT ERROR :: INVALID PHONE NUMBER | 👮‍♂️");
+    }
+    if (!IRCheck.National.isNationalCodeValid(userInfo.nationalNumber)) {
+      return res
+        .status(400)
+        .send("CLIENT ERROR :: INVALID NATIONAL NUMBER | 👮‍♂️");
     }
     return next();
   } catch (error) {
