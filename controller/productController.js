@@ -1,94 +1,94 @@
 /*------<INTIATE PRODUCT CONTROLLER>------*/
-const User = require("./../model/productModel");
 const asyncHandler = require("express-async-handler");
-const GeneralValidate = require("./../middleware/validation/validateProd");
 const Product = require("./../model/productModel");
-const { createToken } = require("../middleware/token/handlerToken");
+const Request = require("./../model/requestModel");
+
 /*------<MRTHODS PRODUCT CONTROLLER>------*/
 exports.addProduct = asyncHandler(async(req,res,next)=>{
-    const newProd = req.body;
-    const generalValidate = new GeneralValidate(newProd)
-    .isExist(['title','price','entities'])
-    .isGT('price')
-    .get();
-    if (!generalValidate) {
-        res.status(401).json({
-            status: "c",
-            messages: "Invalid Data",
-            data: generalValidate,
-          });
-          res.end();
-    }
-    /*------<2><CREATE DATA>------*/
-    const prod = await Product.create(generalValidate);
-    const token = createToken(prod._id);
-    /*------<3><RESPONSE DATA>------*/
+  try {
+    req.product = await Product.create(req.productInfo);
     res.status(201).json({
-    status: "a",
-    token,
-    data: prod,
+    status: "created",
+    data: req.product,
     });
+  } catch (error) {
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
+  }
 });
 exports.allProduct = asyncHandler(async(req,res,next)=>{
+  try{
     /*------<1><RES ALL USERS>------*/
-    const prod = await Product.find();
+    req.product = await Product.find();
+    // .select("-_id");
     res.status(200).json({
     status : "OK",
-    data : prod
+    data : req.product
     })
+  }catch(error){
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
+  }
 });
 /*----Need ID----*/
 exports.oneProduct = asyncHandler(async(req,res,next)=>{
-    const prodId = req.params.id;
-    if (!prodId) {
-      res.status(404).json({
-        status : "c",
-        message : "id parameter is required"
-      })
+  try {
+    let productId = req.params.id;
+    req.product = await Product.findById(productId).select("-_id");
+    if(!req.product){
+      return res.status(500).send("CLIENT ERROR :: THIS PRODUCT DOES NOT EXIST | 🔌");
     }
-    const prod = await Product.findById(prodId);
-    if (!prod) {
-      res.status(404).json({
-        status : "c",
-        message : "product does'nt exist"
-      })
-    }
-    res.status(200).json({
-      status : "a",
-      data : prod
+    res.json({
+      massage : "success",
+      product : req.product,
     })
+  } catch (error) {
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
+  }
 });
 exports.updateProduct = asyncHandler(async(req,res,next)=>{
-    const prodId = req.params.id;
-    const newInfo = req.body;
-    if (!prodId) {
-      res.status(404).json({
-        status : "c",
-        message : "id parameter is required"
-      })
-    }
-    const prod = await Product.findByIdAndUpdate(prodId,newInfo,{new: true});
-    if (!prod) {
-      res.status(404).json({
-        status : "c",
-        message : "product does'nt exist"
-      })
-    }
-    res.status(200).json({
-      status : "a",
-      data : prod
+  try {
+    const product = await Product.findByIdAndUpdate(req.prodId,req.updateProduct,{new:true});
+    res.json({
+      massage : "success",
+      product : product,
     })
+  } catch (error) {
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
+  }
 });
 /*----Soft Delete----*/
 exports.deleteProduct = asyncHandler(async(req,res,next)=>{
-    const prodId = req.params.id;
-    if (!prodId) {
-      res.status(404).json({
-        status : "c",
-        message : "id parameter is required"
-      })
+  try {
+    if(req.userData.role !== "admin"){
+      return res.status(400).send("CLIENT ERROR :: YOU DONT HAVE ACCESS TO THIS ROUTE | 👮‍♂️");  
     }
-    await Product.findByIdAndDelete(prodId);
-    res.status(204)
-    res.end()
+    const prod = await Product.findById(req.params.id);
+    if(!prod){
+      return res.status(404).send("CLIENT ERROR :: THIS PRODUCT DOES NOT EXIST | 🔌");
+    }
+    await Product.findByIdAndDelete(req.params.id);
+    res.status(202).send("DELETED")
+  } catch (error) {
+    /*------<X><SERVER ERROR>------*/
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
+  }
 });
+
+exports.buyProduct = async (req,res) => {
+  try {
+    res.json({
+      payment : req.payment,
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
+  }
+}

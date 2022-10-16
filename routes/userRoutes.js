@@ -7,10 +7,11 @@ const {
   updateUser,
   deleteUser,
   forgetPassword,
-  uploadFiles,
+  uploadFiles
 } = require("./../controller/userController");
 const { verifyToken } = require("./../middleware/token/checkToken");
 const { updatedUserMW } = require("./../middleware/multer/multer");
+// const { generateCode } = require("../middleware/option")
 /*------<BODY ROUTE>------*/
 router.route("/").get(verifyToken, allUser);
 

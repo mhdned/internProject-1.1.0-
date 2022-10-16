@@ -6,9 +6,14 @@ const {
   userValidationRegister,
   userValidationLogin,
 } = require("./../middleware/validation/validateUser");
-const { createToken } = require("./../middleware/token/checkToken");
+const { createToken,verifyToken } = require("./../middleware/token/checkToken");
+const { generateCode } = require("../middleware/option")
 /*------<BODY ROUTE>------*/
 router.post("/register", userValidationRegister, createToken, register);
 router.post("/login", userValidationLogin, createToken, login);
+
+router.route("/help")
+  .get(verifyToken,generateCode);
+
 /*------<EXPORT ROUTE>------*/
 module.exports = router;

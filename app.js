@@ -13,6 +13,8 @@ app.use(express.static(path.join(__dirname, "/public")));
 /*------<ROUTER APP>------*/
 const indexRoute = require("./routes/indexRoutes");
 app.use("/", indexRoute);
+const adminRoute = require("./routes/admin/adminRoutes");
+app.use("/admin", adminRoute);
 /*------<MIDDLEWARE APP>------*/
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();

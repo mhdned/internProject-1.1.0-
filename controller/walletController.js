@@ -1,6 +1,5 @@
 /*------<INTIATE WALLET CONTROLLER>------*/
 const Wallet = require("./../model/walletModel");
-const { generateCode } = require("./optionController");
 const asyncHandler = require("express-async-handler");
 /*------<MRTHODS WALLET CONTROLLER>------*/
 exports.createWallet = asyncHandler(async (req, res, next) => {
@@ -25,3 +24,17 @@ exports.createWallet = asyncHandler(async (req, res, next) => {
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
   }
 });
+
+exports.showWallet = asyncHandler(async(req,res,next)=>{
+  try {
+    res.json({
+      message : "Wallet",
+      data : req.wallet,
+    })
+  } catch (error) {
+      /*------<X><SERVER ERROR>------*/
+      console.log(error);
+      generateCode("failed", "wallet");
+      return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
+  }
+})

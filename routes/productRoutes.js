@@ -1,26 +1,28 @@
 /*------<INTIATE ROUTE>------*/
 const express = require("express");
-// const router = express.Router();
-// const {
-//   addProduct,
-//   allProduct,
-//   deleteProduct,
-//   oneProduct,
-//   updateProduct,
-// } = require("./../controller/productController");
-// const { protected } = require("./../middleware/protected");
-// const {buyProduct,buyProductWithWallet}= require("./../controller/paymentController");
+const router = express.Router();
+const {
+  addProduct,
+  allProduct,
+  deleteProduct,
+  oneProduct,
+  updateProduct,
+  buyProduct
+} = require("./../controller/productController");
+const {validateProduct,validateUpdateProduct,checkExistProduct}=
+    require("./../middleware/validation/validateProduct")
+const {validatePayment} = require("./../middleware/validation/validatePayment");
+const {verifyToken} = require("./../middleware/token/checkToken");
+const {createPayment} = require("./../middleware/payment")
 /*------<BODY ROUTE>------*/
-/*
 router.route("/")
-    .get(allProduct)
-    .post(protected,addProduct);
+    .get(verifyToken,allProduct)
+    .post(verifyToken,validateProduct,addProduct);
 router.route("/:id")
-    .get(oneProduct)
-    .patch(protected,updateProduct)
-    .delete(protected,deleteProduct);
+    .get(verifyToken,oneProduct)
+    .patch(verifyToken,validateUpdateProduct,updateProduct)
+    .delete(verifyToken,deleteProduct);
 router.route('/buy/:id')
-    .post(protected,buyProduct);
-    */
+    .post(verifyToken,validatePayment,checkExistProduct,createPayment,buyProduct);
 /*------<EXPORT ROUTE>------*/
 module.exports = router;

@@ -189,7 +189,9 @@ exports.uploadFiles = asyncHandler(async (req, res, next) => {
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
   }
 });
+
 fileProblem = (filePath) => {
   let fileDelete = fs.realpathSync(`${__dirname}\\..\\${filePath}`);
   fs.unlinkSync(fileDelete);
 };
+
