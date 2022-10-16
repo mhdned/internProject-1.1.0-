@@ -21,6 +21,7 @@
     "dotenv": "^16.0.2",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
+    "ircheck": "^0.3.6",
     "jalali-moment-timezone": "^2.0.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.3",
