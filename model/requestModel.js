@@ -1,6 +1,6 @@
 /*------<INTIATE REQUEST MODEL>------*/
 const mongoose = require("mongoose");
-const moment = require('jalali-moment-timezone');
+const moment = require("moment-timezone");
 /*------<REQUEST SCHEMA>------*/
 const requestSchema = new mongoose.Schema(
   {
@@ -26,7 +26,7 @@ const requestSchema = new mongoose.Schema(
     },
     date : {
         type : String,
-        default : moment(Date.now()).format("X")
+        default : moment(Date.now()).tz('Asia/Tehran').format("X")
     }
   },
   {

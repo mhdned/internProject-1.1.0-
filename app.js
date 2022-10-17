@@ -4,7 +4,7 @@ const app = express();
 const path = require("path");
 const morgan = require("morgan");
 
-let moment = require("moment-timezone")().tz('Asia/Tehran');
+require("moment-timezone");
 
 /*------<MIDDLEWARE APP>------*/
 if (process.env.NODE_ENV === "development") {

@@ -1,6 +1,6 @@
 /*------<INTIATE REQUEST CONTROLLER>------*/
 const Request = require("./../model/requestModel");
-const { dateToString } = require("./../utils/dateHandler")
+const { dateToString,dateToNumber } = require("./../utils/dateHandler")
 /*------<MRTHODS REQUEST CONTROLLER>------*/
 exports.createRequest = async (req,res) => {
   try {
@@ -25,7 +25,8 @@ exports.allRequest = async(req,res)=>{
 
 exports.singleRequest = async (req,res) => {
   try {
-    let request = await Request.findById(req.params.id); 
+    let request = await Request.findById(req.params.id);
+    dateToNumber(request.date);
     request.date = dateToString(request.date);
     res.status(200).json(request)
   } catch (error) {
