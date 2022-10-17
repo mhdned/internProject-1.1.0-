@@ -1,11 +1,10 @@
 /*------<INTIATE REQUEST CONTROLLER>------*/
 const Request = require("./../model/requestModel");
 const moment = require('jalali-moment-timezone');
-// const asyncHandler = require("express-async-handler");
 /*------<MRTHODS REQUEST CONTROLLER>------*/
 exports.createRequest = async (req,res) => {
   try {
-    req.reqData.date = moment(Date.now());
+    req.reqData.date = undefined;
     const request = await Request.create(req.reqData);
     res.status(201).json(request)
   } catch (error) {

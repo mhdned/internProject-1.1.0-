@@ -1,5 +1,6 @@
 /*------<INTIATE REQUEST MODEL>------*/
 const mongoose = require("mongoose");
+const moment = require('jalali-moment-timezone');
 /*------<REQUEST SCHEMA>------*/
 const requestSchema = new mongoose.Schema(
   {
@@ -24,7 +25,8 @@ const requestSchema = new mongoose.Schema(
       type : String,
     },
     date : {
-        type : Number
+        type : Number,
+        default : moment(Date.now())
     }
   },
   {
