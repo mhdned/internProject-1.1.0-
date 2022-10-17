@@ -1,6 +1,6 @@
 /*------<INTIATE REQUEST CONTROLLER>------*/
 const Request = require("./../model/requestModel");
-const moment = require('jalali-moment-timezone');
+const { dateToString } = require("./../utils/dateHandler")
 /*------<MRTHODS REQUEST CONTROLLER>------*/
 exports.createRequest = async (req,res) => {
   try {
@@ -25,9 +25,8 @@ exports.allRequest = async(req,res)=>{
 
 exports.singleRequest = async (req,res) => {
   try {
-    let request = await Request.findById(req.params.id);
-    request.dateReq = moment(request.date).format('jYYYY|jMM|jDD');
-    request.date = undefined;
+    let request = await Request.findById(req.params.id); 
+    request.date = dateToString(request.date);
     res.status(200).json({
       request
     })
