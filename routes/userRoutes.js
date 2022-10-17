@@ -11,6 +11,7 @@ const {
 } = require("./../controller/userController");
 const { verifyToken } = require("./../middleware/token/checkToken");
 const { updatedUserMW } = require("./../middleware/multer/multer");
+const { validationUpdate } = require("./../middleware/validation/validateUser")
 // const { generateCode } = require("../middleware/option")
 /*------<BODY ROUTE>------*/
 router.route("/").get(verifyToken, allUser);
@@ -18,7 +19,7 @@ router.route("/").get(verifyToken, allUser);
 router
   .route("/:id")
   .get(verifyToken, getUser)
-  .patch(verifyToken, updateUser)
+  .patch(verifyToken,validationUpdate, updateUser)
   .delete(verifyToken, deleteUser);
 
 router.route("/forget-password").put(verifyToken, forgetPassword);

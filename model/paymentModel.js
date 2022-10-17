@@ -28,9 +28,6 @@ const paymenSchema = new mongoose.Schema({
     },
     uniqueKey : {
         type : String,
-    },
-    date : {
-        type : Number
     }
 },{
     timestamps : true

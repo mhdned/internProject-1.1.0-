@@ -28,8 +28,6 @@ exports.allUser = asyncHandler(async (req, res, next) => {
 });
 exports.getUser = asyncHandler(async (req, res, next) => {
   try {
-    /*------<1><GET USER>------*/
-    /*------<2><CHECK USER TOKEN>------*/
     if (req.userData.role !== "admin") {
       return res
         .status(403)
@@ -60,26 +58,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 });
 exports.updateUser = asyncHandler(async (req, res, next) => {
   try {
-    /*------<1><GET USER AND INFO>------*/
-    const userId = req.params.id;
-    const newInfo = req.body;
-    /*------<3><VALIDATE INFO>------*/
-    if (newInfo.password) {
-      try {
-        if (newInfo.password === newInfo.passwordConfirm) {
-          newInfo.password = await bcrypt.hash(newInfo.password, 12);
-          newInfo.passwordConfirm = undefined;
-        }
-        if (!newInfo.nationalNumber) {
-          newInfo.nationalNumber = await bcrypt.hash(this.nationalNumber, 12);
-        }
-      } catch (error) {
-        console.log(error);
-        return res.status(500).send("ERROR PASS :: SOMETHING WRONG | 🔑");
-      }
-    }
-    /*------<4><FIND USER>------*/
-    const user = await User.findByIdAndUpdate(userId, newInfo, { new: true });
+    const user = await User.findByIdAndUpdate(req.params.id, req.updateInfo , { new: true });
     if (!user) {
       return res.status(404).send("CLIENT ERROR :: USER NOT FOUND | 👮‍♂️");
     }
@@ -175,7 +154,6 @@ exports.uploadFiles = asyncHandler(async (req, res, next) => {
     });
     /*------<4><CHECK FILE>------*/
     if (!file) {
-      // console.log(file);
       return res.status(401).send("SERVER ERROR :: SOMTHING WRONG | 😥");
     }
     /*------<5><RESPONSE USER>------*/

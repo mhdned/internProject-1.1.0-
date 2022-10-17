@@ -7,12 +7,10 @@ exports.createPayment = asyncHandler(async (req, res, next) => {
         if(req.payType == 'wallet'){
             const wallet = await Wallet.findOne({userId : req.userId});
             req.walletId = wallet._id;
-            if(this.productPrice > wallet.amount){
-            }
             if(!wallet){
                 return res.status(400).send("CLIENT ERROR :: WALLET DOES'NT EXIST | 👮‍♂️");    
             }
-            if(req.prodData.price < req.prodData.price ){
+            if(wallet.amount < req.prodData.price ){
                 return res.status(400).send("CLIENT ERROR :: PLS CHARGE WALLET | 👮‍♂️");    
             }
             await Wallet.findByIdAndUpdate(req.walletId , {amount : wallet.amount-req.prodData.price});

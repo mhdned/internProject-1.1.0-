@@ -6,6 +6,11 @@ const Request = require("./../model/requestModel");
 /*------<MRTHODS PRODUCT CONTROLLER>------*/
 exports.addProduct = asyncHandler(async(req,res,next)=>{
   try {
+    if (req.userData.role !== "admin") {
+      return res
+        .status(403)
+        .send("CLIENT ERROR :: YOU DONT HAVE PERMISSION TO THIS ROUTE | 👮‍♂️");
+    }
     req.product = await Product.create(req.productInfo);
     res.status(201).json({
     status: "created",
@@ -52,6 +57,11 @@ exports.oneProduct = asyncHandler(async(req,res,next)=>{
 });
 exports.updateProduct = asyncHandler(async(req,res,next)=>{
   try {
+    if (req.userData.role !== "admin") {
+      return res
+        .status(403)
+        .send("CLIENT ERROR :: YOU DONT HAVE PERMISSION TO THIS ROUTE | 👮‍♂️");
+    }
     const product = await Product.findByIdAndUpdate(req.prodId,req.updateProduct,{new:true});
     res.json({
       massage : "success",
@@ -66,6 +76,7 @@ exports.updateProduct = asyncHandler(async(req,res,next)=>{
 /*----Soft Delete----*/
 exports.deleteProduct = asyncHandler(async(req,res,next)=>{
   try {
+    
     if(req.userData.role !== "admin"){
       return res.status(400).send("CLIENT ERROR :: YOU DONT HAVE ACCESS TO THIS ROUTE | 👮‍♂️");  
     }

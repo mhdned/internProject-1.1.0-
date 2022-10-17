@@ -24,6 +24,8 @@
     "ircheck": "^0.3.6",
     "jalali-moment-timezone": "^2.0.4",
     "jsonwebtoken": "^8.5.1",
+    "moment-jalaali": "^0.9.6",
+    "moment-timezone": "^0.5.38",
     "mongoose": "^6.6.3",
     "multer": "^1.4.5-lts.1",
     "slugify": "^1.6.5",

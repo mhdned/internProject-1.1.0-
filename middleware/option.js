@@ -25,6 +25,5 @@ exports.generateCode = asyncHandler(async (req,res, next) => {
   req.reqData = req.body;
   req.reqData.uniqueKey = req.uniqueKey;
   req.reqData.userId = req.userId;
-  console.log(req.reqData);
   next()
 });

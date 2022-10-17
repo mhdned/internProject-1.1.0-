@@ -1,13 +1,13 @@
 /*------<INTIATE REQUEST CONTROLLER>------*/
 const Request = require("./../model/requestModel");
+const moment = require('jalali-moment-timezone');
 // const asyncHandler = require("express-async-handler");
 /*------<MRTHODS REQUEST CONTROLLER>------*/
 exports.createRequest = async (req,res) => {
   try {
+    req.reqData.date = moment(Date.now());
     const request = await Request.create(req.reqData);
-    res.status(201).json({
-      data : request
-    })
+    res.status(201).json(request)
   } catch (error) {
     console.log(error);
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
@@ -17,9 +17,7 @@ exports.createRequest = async (req,res) => {
 exports.allRequest = async(req,res)=>{
   try {
     const requests = await Request.find({userId : req.userId});
-    res.status(201).json({
-      requests
-    })
+    res.status(201).json(requests)
   } catch (error) {
     console.log(error);
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");
@@ -28,8 +26,10 @@ exports.allRequest = async(req,res)=>{
 
 exports.singleRequest = async (req,res) => {
   try {
-    const request = await Request.findById(req.params.id);
-    res.status(202).json({
+    let request = await Request.findById(req.params.id);
+    request.dateReq = moment(new Date(request.date)).format('jYYYY/jMM/jDD|hh:mm:ss');
+    res.status(200).json({
+      date : request.dateReq,
       request
     })
   } catch (error) {
