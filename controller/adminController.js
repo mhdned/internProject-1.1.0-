@@ -8,7 +8,12 @@ exports.allRequests = async(req,res)=>{
             .status(403)
             .send("CLIENT ERROR :: YOU DONT HAVE PERMISSION TO THIS ROUTE | 👮‍♂️");
         }
-        const allRequest = await Request.find();
+        if (req.body.status) {
+            req.statusReq = {status : req.body.status}
+        }else{
+            req.statusReq = {}
+        }
+        const allRequest = await Request.find(req.statusReq);
         res.status(200).json({
             message : "all request",
             data : allRequest

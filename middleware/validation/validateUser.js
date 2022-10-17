@@ -75,7 +75,8 @@ exports.userValidationLogin = asyncHandler(async (req, res, next) => {
     }
     if (
       !userInfo.phoneNumber.startsWith("0") ||
-      typeof (userInfo.phoneNumber * 1) !== "number"
+      typeof (userInfo.phoneNumber * 1) !== "number" ||
+      !IRCheck.Phone.isMobile(userInfo.phoneNumber)
     ) {
       return res.status(400).send("CLIENT ERROR :: INVALID PHONE NUMBER | 👮‍♂️");
     }
