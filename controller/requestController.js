@@ -27,9 +27,7 @@ exports.singleRequest = async (req,res) => {
   try {
     let request = await Request.findById(req.params.id); 
     request.date = dateToString(request.date);
-    res.status(200).json({
-      request
-    })
+    res.status(200).json(request)
   } catch (error) {
     console.log(error);
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");

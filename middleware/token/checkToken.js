@@ -4,15 +4,15 @@ const jwt = require("jsonwebtoken");
 
 exports.verifyToken = asyncHandler(async (req, res, next) => {
   token = req.headers.authorization;
+  console.log(req.headers.authorization);
   if (token && token.startsWith("Bearer")) {
     token = token.split(" ")[1];
   }
-  /*------<CHECK TOKEN EXIST>------*/
   if (!token) {
     res.status(404).send("TOKEN ERROR :: TOKEN IS INVALID");
   }
   try {
-    /*------<CHECK TOKEN>------*/
+    console.log(token);
     const decoded = jwt.verify(token, process.env.JWT_SECURE_PK);
     /*------<TOKEN USER>------*/
     const user = await User.findById(decoded.userId);

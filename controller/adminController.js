@@ -14,10 +14,7 @@ exports.allRequests = async(req,res)=>{
             req.statusReq = {}
         }
         const allRequest = await Request.find(req.statusReq);
-        res.status(200).json({
-            message : "all request",
-            data : allRequest
-        })
+        res.status(200).json(allRequest)
     } catch (error) {
         /*------<X><SERVER ERROR>------*/
         console.log(error);
