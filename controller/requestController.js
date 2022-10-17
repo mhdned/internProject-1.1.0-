@@ -26,9 +26,9 @@ exports.allRequest = async(req,res)=>{
 exports.singleRequest = async (req,res) => {
   try {
     let request = await Request.findById(req.params.id);
-    request.dateReq = moment(new Date(request.date)).format('jYYYY/jMM/jDD|hh:mm:ss');
+    request.dateReq = moment(request.date).format('jYYYY|jMM|jDD');
+    request.date = undefined;
     res.status(200).json({
-      date : request.dateReq,
       request
     })
   } catch (error) {
@@ -40,7 +40,7 @@ exports.singleRequest = async (req,res) => {
 exports.deleteRequest = async (req,res) => {
   try {
     await Request.findByIdAndDelete(req.params.id);
-    res.status(202).send("DELETED")
+    res.status(200).send("DELETED")
   } catch (error) {
     console.log(error);
     return res.status(500).send("SERVER ERROR :: THERE IS A PROBLEM | 🧯");

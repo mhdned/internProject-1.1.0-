@@ -12,6 +12,9 @@ const requestSchema = new mongoose.Schema(
       type : String,
       required : true
     },
+    dateReq : {
+      type : String,
+    },
     userId : {
         type : mongoose.Types.ObjectId,
         ref : "User"
