@@ -1,6 +1,8 @@
 /*------<INTIATE REQUEST MODEL>------*/
 const mongoose = require("mongoose");
-const moment = require("moment-timezone");
+// const moment = require("moment-jalaali");
+// let today = new Date().toLocaleDateString('fa-IR-u-nu-latn');
+// console.log(today);
 /*------<REQUEST SCHEMA>------*/
 const requestSchema = new mongoose.Schema(
   {
@@ -26,7 +28,7 @@ const requestSchema = new mongoose.Schema(
     },
     date : {
         type : String,
-        default : moment(Date.now()).tz('Asia/Tehran').format("X")
+        // default : moment(today).tz('Asia/Tehran').format('x')
     }
   },
   {

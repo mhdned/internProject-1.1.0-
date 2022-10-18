@@ -24,7 +24,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 
 exports.login = asyncHandler(async (req, res, next) => {
   try {
-    res.status(200).json({
+    res.status(202).json({
       token: req.userToken,
       user: req.userData,
     });

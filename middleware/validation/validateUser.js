@@ -3,9 +3,13 @@ const asyncHandler = require("express-async-handler");
 const User = require("../../model/userModel");
 const IRCheck = require("ircheck");
 const bcrypt = require("bcrypt");
+const {logRes} = require("./../../utils/errorHandlet")
+const {dateToString} = require("./../../utils/dateHandler");
+const moment = require('moment-timezone');
 /*------<VALIDATION MIDDLEWARE>------*/
 exports.userValidationRegister = asyncHandler(async (req, res, next) => {
   try {
+    /*------<CHECK NEW USER INFO>------*/
     const userInfo = req.body;
     if (
       !userInfo.userName ||
@@ -53,7 +57,16 @@ exports.userValidationRegister = asyncHandler(async (req, res, next) => {
         .status(400)
         .send("CLIENT ERROR :: INVALID NATIONAL NUMBER | 👮‍♂️");
     }
-    return next();
+    if(userInfo.birth){
+      if(typeof userInfo.birth !== "string"){
+        return res.status(400).send("CLIENT ERROR :: INVALID PHONE NUMBER | 👮‍♂️");
+    }
+    // let ubd = userInfo.birth.split("/");
+    ubd = moment(new Date(userInfo.birth)).tz('Asia/Tehran').format("x");
+    req.body.birth =  ubd;
+    // return logRes(res,req.body.birth);
+      return next();
+    }
   } catch (error) {
     /*------<X><SERVER ERROR>------*/
     console.log(error);
@@ -63,6 +76,7 @@ exports.userValidationRegister = asyncHandler(async (req, res, next) => {
 
 exports.userValidationLogin = asyncHandler(async (req, res, next) => {
   try {
+    /*------<CHECK USER DATA (LOGIN)>------*/
     const userInfo = req.body;
     if (!userInfo.password || !userInfo.phoneNumber) {
       return res.status(400).send("CLIENT ERROR :: INVALID DATA | 👮‍♂️");
@@ -84,7 +98,6 @@ exports.userValidationLogin = asyncHandler(async (req, res, next) => {
     const currentUser = await User.findOne({
       phoneNumber: userInfo.phoneNumber,
     });
-
     if (
       !currentUser ||
       !(await currentUser.comparePassword(
@@ -97,6 +110,8 @@ exports.userValidationLogin = asyncHandler(async (req, res, next) => {
         .send("CLIENT ERROR :: USER NOT EXIST OR PASSWORD IS WRONG | 👮‍♂️");
     }
     currentUser.password = undefined;
+    console.log(dateToString(currentUser.birth));
+    currentUser.birth = dateToString(currentUser.birth);
     req.userData = currentUser;
     req.userId = currentUser._id;
     return next();
@@ -111,7 +126,7 @@ exports.validationUpdate = asyncHandler(async (req,res,next)=>{
   try {
         /*------<1><GET USER AND INFO>------*/
         req.updateInfo = req.body;
-        /*------<3><VALIDATE INFO>------*/
+        /*------<3><VALIDATE USER NEW INFO>------*/
         if (req.updateInfo.password) {
           if (req.updateInfo.password === req.updateInfo.passwordConfirm) {
             req.updateInfo.password = await bcrypt.hash(req.updateInfo.password, 12);
@@ -130,6 +145,14 @@ exports.validationUpdate = asyncHandler(async (req,res,next)=>{
               return res.status(500).send("ERROR PASS :: SOMETHING WRONG 3 | 🔑");
             }
           }
+          if(req.updateInfo.birth){
+            if(typeof req.updateInfo.birth !== "string"){
+              return res.status(400).send("CLIENT ERROR :: INVALID PHONE NUMBER | 👮‍♂️");
+          }
+          ubd = moment(new Date(req.updateInfo.birth)).tz('Asia/Tehran').format("x");
+          req.updateInfo.birth =  ubd;
+          }
+          // return logRes(res,req.updateInfo.birth);
           next()
         }
   } catch (error) {

@@ -3,7 +3,9 @@ const Wallet = require("../../model/walletModel");
 
 exports.validateDataWallet = asyncHandler(async (req, res, next) => {
     try {
+        /*------<1><GET WALLET AMOUNT>------*/
         let wallet = req.body.amount;
+        /*------<2><VALIDATE WALLET AMOUNT>------*/
         if (wallet && wallet > 0.0 && typeof wallet === "number") {
             req.walletAmount = wallet;
             return next()
@@ -17,16 +19,19 @@ exports.validateDataWallet = asyncHandler(async (req, res, next) => {
 
 exports.checkWalletExist = asyncHandler(async (req, res, next) => {
     try {
+        /*------<1><CHECK WALLET EXIST>------*/
         const walletExist = await Wallet.findOne({userId : req.userId});
         if (walletExist) {
             req.wallet = walletExist;
             req.walletId = walletExist._id;
             return next();
         }
+        /*------<1><CREATE WALLET IF NOT EXIST>------*/
         const wallet = await Wallet.create({
             amount : req.body.amount,
             userId : req.userId
         });
+        /*------<1><CHECK WALLET CREATED>------*/
         if(wallet){
             req.wallet = wallet;
             next();

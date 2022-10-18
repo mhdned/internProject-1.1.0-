@@ -30,13 +30,12 @@ exports.allProduct = asyncHandler(async(req,res,next)=>{
     return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
   }
 });
-/*----Need ID----*/
 exports.oneProduct = asyncHandler(async(req,res,next)=>{
   try {
     let productId = req.params.id;
     req.product = await Product.findById(productId).select("-_id");
     if(!req.product){
-      return res.status(500).send("CLIENT ERROR :: THIS PRODUCT DOES NOT EXIST | 🔌");
+      return res.status(400).send("CLIENT ERROR :: THIS PRODUCT DOES NOT EXIST | 🔌");
     }
     res.json(req.product)
   } catch (error) {
@@ -57,7 +56,7 @@ exports.updateProduct = asyncHandler(async(req,res,next)=>{
   } catch (error) {
     /*------<X><SERVER ERROR>------*/
     console.log(error);
-    return res.status(500).send("SERVER ERROR :: VALIDATION FAILED | 🔌");
+    return res.status(500).send("SERVER ERROR :: ... | 🔌");
   }
 });
 /*----Soft Delete----*/
@@ -65,14 +64,14 @@ exports.deleteProduct = asyncHandler(async(req,res,next)=>{
   try {
     
     if(req.userData.role !== "admin"){
-      return res.status(400).send("CLIENT ERROR :: YOU DONT HAVE ACCESS TO THIS ROUTE | 👮‍♂️");  
+      return res.status(401).send("CLIENT ERROR :: YOU DONT HAVE ACCESS TO THIS ROUTE | 👮‍♂️");  
     }
     const prod = await Product.findById(req.params.id);
     if(!prod){
       return res.status(404).send("CLIENT ERROR :: THIS PRODUCT DOES NOT EXIST | 🔌");
     }
     await Product.findByIdAndDelete(req.params.id);
-    res.status(202).send("DELETED")
+    res.status(202).send("PRODUCT DELETED | 🗑")
   } catch (error) {
     /*------<X><SERVER ERROR>------*/
     console.log(error);

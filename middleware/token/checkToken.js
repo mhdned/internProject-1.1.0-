@@ -2,17 +2,23 @@ const asyncHandler = require("express-async-handler");
 const User = require("./../../model/userModel");
 const jwt = require("jsonwebtoken");
 
+const {logRes} = require("./../../utils/errorHandlet");
+// return logRes(res,{value});
+
 exports.verifyToken = asyncHandler(async (req, res, next) => {
+  /*------<1><GET TOKEN>------*/
   token = req.headers.authorization;
-  if (token && token.startsWith("Bearer")) {
-    token = token.split(" ")[1];
-  }
+  /*------<2><VALIDATE TOKEN>------*/
   if (!token) {
     res.status(404).send("TOKEN ERROR :: TOKEN IS INVALID");
   }
+  if (token.startsWith("Bearer")) {
+    token = token.split(" ")[1];
+  }
   try {
+    /*------<3><VERIFY TOKEN>------*/
     const decoded = jwt.verify(token, process.env.JWT_SECURE_PK);
-    /*------<TOKEN USER>------*/
+    /*------<FIND USER FROM TOKEN>------*/
     const user = await User.findById(decoded.userId);
     /*------<CHECK TOKEN USER>------*/
     if (!user) {
