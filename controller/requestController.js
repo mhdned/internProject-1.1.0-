@@ -1,7 +1,7 @@
 /*------<INTIATE REQUEST CONTROLLER>------*/
 const Request = require("./../model/requestModel");
-const { dateToString,dateToNumber } = require("./../utils/dateHandler");
-const {logRes} = require("./../utils/errorHandlet")
+const { dateToString } = require("./../utils/dateHandler");
+// const {logRes} = require("./../utils/errorHandlet")
 const moment = require("moment-jalaali");
 /*------<MRTHODS REQUEST CONTROLLER>------*/
 exports.createRequest = async (req,res) => {

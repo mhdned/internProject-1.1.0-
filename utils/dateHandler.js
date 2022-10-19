@@ -8,5 +8,5 @@ exports.dateToString = (date) => {
 /*------<TEST FUNCTION>------*/
 exports.dateToNumber = (date) => {
     date = moment(date,'X').format("jYYYY/jMM/jDD/hh:mm:ss:A");
-    console.log(moment(date,"jYYYY/jMM/jDD/hh:mm:ss:A").fromNow());
+    // console.log(moment(date,"jYYYY/jMM/jDD/hh:mm:ss:A").fromNow());
 }
